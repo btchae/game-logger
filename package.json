@@ -1,0 +1,33 @@
+{
+  "name": "game_logger",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/btchae/game-logger.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/btchae/game-logger/issues"
+  },
+  "homepage": "https://github.com/btchae/game-logger#readme",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.14.0",
+    "express-session": "^1.14.0",
+    "method-override": "^2.3.6",
+    "morgan": "^1.7.0",
+    "passport": "^0.3.2",
+    "pg": "^6.0.2",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^3.23.4"
+  }
+}
