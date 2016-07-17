@@ -5,10 +5,10 @@ var port = process.env.PORT || 3000;
 var passport = require('passport');
 var flash = require('connect-flash'); // store and retrieve messages in session store
 var morgan = require('morgan'); //logger
-var cookieParser = require('cookieParser'); // parse cookies
+var cookieParser = require('cookie-parser'); // parse cookies
 var bodyParser = require('body-parser'); // parse posts
-var ssession = require('express-session');// session middleware
-require('./config/passport')(passport); // pass passport for configuration
+var session = require('express-session');// session middleware
+require('./config/passport'); // pass passport for configuration
 
 //Middleware
 app.use(morgan('dev'));// log every request to the console
@@ -25,7 +25,6 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 //Controllers
 // var userController = require('./controllers/users.js');
 require('./controllers/users.js')(app, passport);
-require('./controllers/games.js')(app, passport);
 
 //Listen
 app.listen(port);

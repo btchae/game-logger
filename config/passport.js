@@ -1,11 +1,12 @@
 var LocalStrategy = require('passport-local').Strategy;
-
+var passport = require('passport');
 //load the user model
+var configDB = require('./database.js');
 var Sequelize = require('sequelize');
 var pg = require('pg');
 var pghstore = require('pg-hstore');
 var sequelize = new Sequelize(configDB.url);
-var User = sequelize.import('../models/user.js');
+var User = sequelize.import('../models/users.js');
 User.sync();
 
 // =========================================================================
