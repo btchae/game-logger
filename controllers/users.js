@@ -32,7 +32,7 @@ router.get('/', function(req, res) {
 
 router.get('/seed', function(req, res) {
   console.log('testing seed');
-  User.create({username: 'test', email: 'test', password: 'test'});
+  User.create({username: 'test1', email: 'test1', password: 'test1'});
 });
 
 // USER SHOW - user profile
@@ -47,6 +47,25 @@ router.get("/:id", function(req, res) {
 });
 
 //UPDATE USER
+router.put("/:id", function(req, res) {
+  console.log('testing update user');
+  console.log(req.body);
+  User.findById(req.params.id).then(function(user, err) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(user.username);
+      console.log(user.email);
+      console.log(user.password);
+      user.update({
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password
+      })
+      res.json(user);
+    }
+  });
+});
 
 //DELETE USER
 router.delete("/:id", function(req, res) {
