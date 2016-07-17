@@ -36,12 +36,29 @@ router.get('/seed', function(req, res) {
 });
 
 // USER SHOW - user profile
-router.get("/:user_id", function(req, res) {
-  User.findById(req.params.user_id).then(function(user, err) {
+router.get("/:id", function(req, res) {
+  User.findById(req.params.id).then(function(user, err) {
     if (err) {
       console.log(err);
     } else {
       res.json(user);
+    }
+  });
+});
+
+//UPDATE USER
+
+//DELETE USER
+router.delete("/:id", function(req, res) {
+  console.log('testing delete');
+  User.findById(req.params.id).then(function(user, err) {
+    if (err) {
+      console.log(err);
+    } else if (user.id == req.params.user_id) {
+      user.destroy();
+      res.send(true);
+    } else {
+      console.log("something else is up");
     }
   });
 });
