@@ -25,6 +25,9 @@ router.post('/', function(req, res) {
   res.send(true);
 });
 
+router.get('/', function(req, res) {
+  console.log('testing index');
+})
 // -----------------------------------------------
 // ROUTES THAT REQUIRE AUTHENTICATION w/ JWT BELOW
 // -----------------------------------------------
