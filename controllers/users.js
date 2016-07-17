@@ -52,9 +52,13 @@ router.get("/:id", function(req, res) {
 router.delete("/:id", function(req, res) {
   console.log('testing delete');
   User.findById(req.params.id).then(function(user, err) {
+    console.log('testing findById function');
     if (err) {
       console.log(err);
-    } else if (user.id == req.params.user_id) {
+    } else if (user.id == req.params.id) {
+      console.log(user.id);
+      console.log(req.params.id);
+      console.log('it should be deleting if I see this');
       user.destroy();
       res.send(true);
     } else {
