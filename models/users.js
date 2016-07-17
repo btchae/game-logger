@@ -1,31 +1,39 @@
-var bcrypt = require('bcrypt-nodejs');
+var express = require('express');
+var Sequelize = require("sequelize");
+var db = process.env.DATABASE_URI || "postgres://localhost/game_logger";
+var connection = new Sequelize(db);
+var bcrypt = require('bcryptjs');
+var crypto = require('crypto');
 
-module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('user', {
-    username: DataTypes.STRING,
-    email: DataTypes.STRING,
-    password: DataTypes.STRING
+// console.log("in users")
+var User = connection.define('users', {
+  username: {
+    type: Sequelize.STRING,
+    unique: true,
+    allowNull: false 
   },
-  {
-    classMethods: {
-      generateHash: function(password) {
-        return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
-      }
-    },
-    instanceMethods: {
-      validPassword: function(password) {
-        return bcrypt.compareSync(password, this.password);
-      }
-    },
-    getterMethods: {
-      someValue: function() {
-        return this.someValue;
-      }
-    },
-    setterMethods: {
-      someValue: function(value) {
-        this.someValue = value;
-      }
+  email: {
+    type: Sequelize.STRING, 
+    unique: true,
+    allowNull: false
+  },
+  password: {
+    type: Sequelize.STRING
+  }
+}, // this is how I can hash passwords using sequelize and add instance methods
+{
+  hooks: {
+    afterValidate: function(user) {
+      user.password = bcrypt.hashSync(user.password, 10);
     }
-  });
-}
+  },
+  instanceMethods: {
+    authenticate: function(passwordTry) {
+      return bcrypt.compareSync(passwordTry, this.password);
+    }
+  }
+});
+
+User.sync();
+
+module.exports = User;

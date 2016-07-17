@@ -1,69 +1,44 @@
-module.exports = function(router, passport) {
-  router.get('/', function(req,res){
-    res.render('index.ejs');
-  })
+//REQUIREMENTS
+var express = require('express');
+var router = express.Router();
+var Sequelize = require("sequelize");
+var db = process.env.DATABASE_URI || "postgres://localhost/game_logger";
+var connection = new Sequelize(db);
+var User = require('../models/users.js');
+var passport = require('../config/passport.js');
 
-  router.get('/:id', function(req,res){
-    console.log(req.params.id);
-    res.send(req.body);
-  });
-}
+// ------------------------------
+// ROUTES THAT DON'T REQUIRE AUTH
+// ------------------------------
 
+// TESTING
+router.get('/testing', function(req, res) {
+ console.log('hi');
+ res.send('bye');
+});
 
-// // get all authors
-// router.get('/authors', function(req, res) {
-//   Author.findAll({}).then(function(authors) {
-//     res.json(authors);
-//   });
+// CREATE A NEW USER
+router.post('/', function(req, res) {
+  var data = {username: req.body.username, email: req.body.email, password: req.body.password}
+  var newUser = User.create({username: data.username, email: data.email, password: data.password})
+  // console.log(newUser);
+  res.send(true);
+});
+
+// -----------------------------------------------
+// ROUTES THAT REQUIRE AUTHENTICATION w/ JWT BELOW
+// -----------------------------------------------
+router.use(passport.authenticate('jwt', { session: false }));
+
+// TESTING
+// router.get('/', function(req, res) {
+//  console.log('hi');
+//  res.send('bye');
+// });
+// router.get('/test', function(req, res) {
+//  res.send('This should work only if logged in');
 // });
 
-// // add new author
-// router.post('/authors', function(req, res) {
-//   Author.create({
-//     firstName: req.body.firstName,
-//     lastName: req.body.lastName
-//   }).then(function(author) {
-//     res.json(author);
-//     // res.send(true);
-//   });
-// });
+// INDEX
 
-// //show one author
-// router.get('/authors/:id', function(req, res) {
-//   Author.find({
-//     where: {
-//       id: req.params.id
-//     }
-//   }).then(function(author) {
-//     res.json(author);
-//   });
-// });
-
-// // update single author
-// router.put('/authors/:id', function(req, res) {
-//   Author.find({
-//     where: {
-//       id: req.params.id
-//     }
-//   }).then(function(author) {
-//     if(author){
-//       author.updateAttributes({
-//         firstName: req.body.firstName,
-//         lastName: req.body.lastName
-//       }).then(function(author) {
-//         res.send(author);
-//       });
-//     }
-//   });
-// });
-
-// // delete a single author
-// router.delete('/authors/:id', function(req, res) {
-//   Author.destroy({
-//     where: {
-//       id: req.params.id
-//     }
-//   }).then(function(author) {
-//     res.json(author);
-//   });
-// });
+module.exports = router;

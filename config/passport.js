@@ -1,90 +1,57 @@
-var LocalStrategy = require('passport-local').Strategy;
+var User = require('../models/users.js');
 var passport = require('passport');
-//load the user model
-var configDB = require('./database.js');
-var Sequelize = require('sequelize');
-var pg = require('pg');
-var pghstore = require('pg-hstore');
-var sequelize = new Sequelize(configDB.url);
-var User = sequelize.import('../models/users.js');
-User.sync();
+var LocalStrategy = require('passport-local').Strategy;
+var JwtStrategy = require('passport-jwt').Strategy;
+var ExtractJwt = require('passport-jwt').ExtractJwt;
+var JwtOpts = {};
+// var pg = require('pg');
+var db = process.env.DATABASE_URI || "postgres://localhost/game_logger";
+// var client = new pg.Client(db);
+// client.connect();
+// var bcrypt = require('bcryptjs');
 
-// =========================================================================
-// passport session setup ==================================================
-// =========================================================================
-// required for persistent login sessions
-// passport needs ability to serialize and unserialize users out of session
+var util = require("util");
+JwtOpts.jwtFromRequest = function(req) {
+  var token = null;
+  if (req && req.cookies) {
+      token = req.cookies['jwt_token'];
+  }
+  return token;
+};
 
-//used to serialize the user
-passport.serializeUser(function(user, done){
-  done(null, user.id);
-});
+JwtOpts.secretOrKey = process.env.JWT_SECRET;
 
-//used to deserialize user
-passport.deserializeUser(function(id,done){
-  User.findById(id).then(function(user){
-    done(null, user);
-  }).catch(function(e){
-    done(e, false);
-  });
-});
-
-//Login
-passport.use('local-login', new LocalStrategy({
-  usernameField: 'Username',
-  passwordField: 'Password',
-  passReqToCallBack: true //allows us to pass in the req from our route (lets us check if a user is logged in or not)
-},
-function(req, username, password, done){
-  User.findOne({ where: {username: username }})
-  .then(function(user){
-    if (!user) {
-      done(null, false, req.flash('loginMessage', 'Unknown user'));
-    } else if(!user.validPassword(password)){
-      done(null, false, req.flash('loginMessage', 'Wrong password'));
+passport.use(new JwtStrategy(JwtOpts, function(jwt_payload, done) {
+  console.log( "JWT PAYLOAD" + util.inspect(jwt_payload));
+  User.find({where: {username: jwt_payload.username}}).then(function(result, err) {
+    if (err) {
+        return done(err, false);
+    } else if (result) {
+        console.log(result);
+        console.log("user is " + result.username)
+        done(null, result);
     } else {
-      done(null, user);
+        done(null, false);
     }
-  })
-  .catch(function(e){
-    done(null, false, req.flash('loginMessage',e.name + " " + e.message));
   });
 }));
 
-//Signup
-passport.use('local-signup', new LocalStrategy({
-  usernameField: 'Username',
-  passwordField: 'Password',
-  passReqToCallBack: true
-},
-function(req, username, password, done){
-  User.findOne({ where: {username: username }})
-  .then(function(existingUser) {
-    //Checks if username is already taken
-    if (existingUser)
-      return done(null, false, req.flash('loginMessage', 'That email is already taken.'));
+passport.use( new LocalStrategy (
+  function( username, password, done ) {
+    User.find({where: {username: username} }).then(function(dbUser, err) {
+      // console.log("in passport, dbUser")
+      // console.log(dbUser);
 
-    //If Logged in, connect the newly made account
-    if (req.user) {
-      var user = req.user;
-      user.username = username;
-      user.password = password;
-      user.save().catch(function(err){
-        throw err;
-      }).then (function() {
-        done(null, user);
-      });
-    }
-
-    else {
-      //create user
-      var newUser = User.build({username: username, password: User.generateHash(password)});
-      newUser.save().then(function() {done (null, newUser);}).catch(function(err) { done(null, false, req.flash('loginMessage', err));});
-    }
-  })
-  .catch(function(e) {
-    done(null, false, req.flash('loginMessage',e.name + " " + e.message));  
-  })
-}));
+      if (err) { return done(err); }
+      else if (!dbUser) {
+        return done(null, false);
+      }
+      if (!dbUser.authenticate(password)) {
+        return done(null, false, { message: 'Incorrect password.' });
+        return done(null, false);
+      }
+      return done(null, dbUser);
+    });
+  }));
 
 module.exports = passport;
