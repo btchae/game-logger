@@ -10,8 +10,13 @@ $(document).ready(function() {
     $container.append('<h1>Welcome to Game Logger!</h1>');
   });
   var $profile = $('<li>Profile</li>');
+  $profile.click(function(){
+    console.log(Cookies("id"));
+    getUserEdit(Cookies("id"));
+  });
   var $users = $('<li>Users</li>');
   $users.click(function() {
+    console.log('clicking user');
     getUsers();
   });
   var $searchGames = $('<li>Search Games</li>');
@@ -65,6 +70,7 @@ $(document).ready(function() {
     $loginForm.hide();
     $signupLink.hide();
     $logoutLink.hide();
+    $navbar.empty();
     $navbar.append($home);
     $navbar.append($searchGames);
     $navbar.append($profile);
@@ -77,6 +83,7 @@ $(document).ready(function() {
     $signupLink.hide();
     $signupForm.hide();
     $logoutLink.hide();
+    $navbar.empty();
     $navbar.append($home);
     $navbar.append($users);
     $navbar.append($login);
@@ -102,6 +109,13 @@ $(document).ready(function() {
           $signupForm.hide();
           $signupLink.hide();
           $loginForm.hide();
+          $navbar.empty();
+          $navbar.append($home);
+          $navbar.append($searchGames);
+          $navbar.append($profile);
+          $navbar.append($users);
+          $navbar.append($logout);
+    $navbar.show();
       } else {
         console.log("ERROR LOGGING IN");
       }
@@ -147,7 +161,7 @@ $(document).ready(function() {
   var redirectLogin = function() {
     $signupForm.hide();
     $signupLink.hide();
-    $loginForm.show();
+    $loginForm.hide();
   }
 
   // Event listener and handler to signup
@@ -156,7 +170,7 @@ $(document).ready(function() {
     $loginForm.hide();
     $logoutLink.hide();
     $signupLink.hide();
-    $signupForm.show();
+    $signupForm.hide();
   });
 });
 
@@ -210,6 +224,8 @@ var getSingleUser = function(id) {
 };
 
 var displayUser = function(data) {
+  console.log('testing display user');
+  console.log(data.user);
   var $container = $('#container');
   var $loginForm = $("#login-form");
   var $signupForm = $("#signup-form");
@@ -224,13 +240,18 @@ var displayUser = function(data) {
   $displayUserDiv.append($displayUsername);
   $displayUserDiv.append($displayEmail);
   $displayUserDiv.append($displayGame);
-  for (var i = 0; i < data.games.length; i++) {
-    var $gameList = $('<p id='+data.games[i].id+'>'+data.games[i].title+'</p>')
-    $gameList.click(function() {
-      console.log(this.getAttribute('id'));
-      getSingleGame(this.getAttribute('id'));
-    });
-    $displayGame.append($gameList);
+  if (data.games.length > 0) {
+    for (var i = 0; i < data.games.length; i++) {
+      var $gameList = $('<p id='+data.games[i].id+'>'+data.games[i].title+'</p>')
+      $gameList.click(function() {
+        console.log(this.getAttribute('id'));
+        getSingleGame(this.getAttribute('id'));
+      });
+      $displayGame.append($gameList);
+      $container.append($displayUserDiv);
+    }
+  } else {
+    $displayUserDiv.append('<p>No games to show</p>');
     $container.append($displayUserDiv);
   }
 };
@@ -259,13 +280,11 @@ var displayGame = function(data) {
   var $displayGameDescription = $('<p>'+'Description: '+'</p>');
   $displayGameDescription.html(data.description);
   var $displayGamePlatforms = $('<p>'+'Platforms: '+'</p>');
-  var $displayGameRatings = $('<p>'+'Ratings: '+'</p>');
   $displayGameDiv.append($displayGameTitle);
   // $displayGameDiv.append($displayGameImage);
   $displayGameDiv.append($displayGameDeck);
   $displayGameDiv.append($displayGameDescription);
   $displayGameDiv.append($displayGamePlatforms);
-  $displayGameDiv.append($displayGameRatings);
   $container.append($displayGameDiv);
 };
 
@@ -308,3 +327,70 @@ var displaySearchResults = function(data) {
     $container.append($gameResults);
   }
 };
+
+var getUserEdit = function(id) {
+  $.ajax({
+    url: '/users/'+id,
+    method: 'GET'
+  }).done(function(data) {
+    console.log(data);
+    displayUserEdit(data);
+  });
+};
+
+var displayUserEdit = function(data) {
+  console.log(data);
+  var $container = $('#container');
+  var $loginForm = $("#login-form");
+  var $signupForm = $("#signup-form");
+  $container.empty();
+  $loginForm.hide();
+  $signupForm.hide();
+  var $userEditForm = $('<form></form>');
+  $userEditForm.attr('method','get'); 
+  $userEditForm.submit(function(e) {
+    e.preventDefault();
+    updateUser(data.user.username,$emailInput.val(),$passwordInput.val());
+  });
+  var $passwordInput = $('<input></input>');
+  $passwordInput.attr('type','password');
+  $passwordInput.attr('placeholder','password');
+  var $emailInput = $('<input></input>');
+  $emailInput.attr('type','text');
+  $emailInput.attr('placeholder','email');
+  $editButton = $('<button>Edit User</button>');
+  $userEditForm.append($passwordInput);
+  $userEditForm.append($emailInput);
+  $userEditForm.append($editButton);
+  $container.append($userEditForm);
+}
+
+var updateUser = function(username, email, password) {
+  $.ajax({
+    url: '/users/'+Cookies("id"),
+    method: 'PUT',
+    data: {
+      username: username,
+      email: email,
+      password: password
+    }
+  }).done(function(data) {
+    // console.log(data);
+    getSingleUser(data.id);
+  });
+};
+
+  //   var $form = $('<form></form>');
+  //   $form.attr('method','get');
+  //   $form.submit(function(e){
+  //     e.preventDefault();
+  //     searchGames($input.val());
+  //     console.log($input.val());
+  //   });
+  // var $input = $('<input></input>');
+  // $input.attr('type','text');
+  // $input.attr('placeholder','Search Games');
+  // $form.append($input);
+  // $container.append($form);
+  // var $gameSearchButton = $('<button>Game Search</button>');
+  // $form.append($gameSearchButton);

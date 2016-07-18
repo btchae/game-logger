@@ -55,8 +55,12 @@ var Game = connection.define('games', {
     type: Sequelize.ARRAY(Sequelize.STRING),
     allowNull: true
   },
-  ratings: {
-    type: Sequelize.ARRAY(Sequelize.STRING),
+  progress: {
+    type: Sequelize.TEXT,
+    allowNull: true
+  },
+  review: {
+    type: Sequelize.TEXT,
     allowNull: true
   }
 });
