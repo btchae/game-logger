@@ -43,7 +43,7 @@ router.get('/', function(req, res, next) {
     if (err) {
       console.log(err);
     } else {
-      console.log(users[0].games);
+      // console.log(users[0].games); Need to add the "include" in order to get games from the users
       // console.log(users);
       res.send(users);
     }
@@ -104,6 +104,21 @@ router.delete("/:id", function(req, res) {
     } else {
       console.log("something else is up");
     }
+  });
+});
+
+//ADD GAME TO USER
+router.post('/:id/add-game', function(req, res) {
+  console.log('adding new game');
+  console.log(req.body);
+  Game.create({
+    title: req.body.title,
+    image: req.body.image,
+    deck: req.body.deck,
+    description: req.body.description,
+    platforms: req.body.platforms,
+    ratings: req.body.ratings,
+    userId: req.params.id
   });
 });
 
