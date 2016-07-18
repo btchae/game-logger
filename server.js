@@ -9,7 +9,7 @@ var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var cookieParser = require('cookie-parser');
 var port = process.env.PORT || 3000;
-var db = process.env.DATABASE_URI || "postgres://localhost/game_logger";
+var db = process.env.DATABASE_URL || "postgres://localhost/game_logger";
 var Sequelize = require("sequelize");
 var pg = require('pg');
 
