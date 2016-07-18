@@ -15,6 +15,25 @@ $(document).ready(function() {
     getUsers();
   });
   var $searchGames = $('<li>Search Games</li>');
+  $searchGames.click(function() {
+    $container.empty();
+    $loginForm.hide();
+    $signupForm.hide();
+    var $form = $('<form></form>');
+    $form.attr('method','get');
+    $form.submit(function(e){
+      e.preventDefault();
+      searchGames($input.val());
+      console.log($input.val());
+    });
+  var $input = $('<input></input>');
+  $input.attr('type','text');
+  $input.attr('placeholder','Search Games');
+  $form.append($input);
+  $container.append($form);
+  var $gameSearchButton = $('<button>Game Search</button>');
+  $form.append($gameSearchButton);
+  });
   var $login = $('<li>Login</li>');
   $login.click(function() {
     $container.empty();
@@ -47,6 +66,7 @@ $(document).ready(function() {
     $signupLink.hide();
     $logoutLink.hide();
     $navbar.append($home);
+    $navbar.append($searchGames);
     $navbar.append($profile);
     $navbar.append($users);
     $navbar.append($logout);
@@ -75,9 +95,10 @@ $(document).ready(function() {
         password: $loginForm.find("[name=password]").val()
       }
     }).success(function(data){
-      // console.log(data);
+      console.log(data);
       if(data.token){
         Cookies.set("jwt_token", data.token);
+        Cookies.set("id", data.userId);
           $signupForm.hide();
           $signupLink.hide();
           $loginForm.hide();
@@ -184,5 +205,106 @@ var getSingleUser = function(id) {
     method: 'GET'
   }).done(function(data) {
     console.log(data);
+    displayUser(data);
   });
-}
+};
+
+var displayUser = function(data) {
+  var $container = $('#container');
+  var $loginForm = $("#login-form");
+  var $signupForm = $("#signup-form");
+  $container.empty();
+  $loginForm.hide();
+  $signupForm.hide();
+  var $displayUserDiv = $('<div id='+data.user.id+'></div>');
+  var $displayUsername = $('<p>'+'Username: '+data.user.username+'</p>');
+  var $displayEmail = $('<p>'+'Email: '+data.user.email+'</p>');
+  var $displayGame = $('<div></div>');
+  $displayGame.html('<h4>Games:</h4>');
+  $displayUserDiv.append($displayUsername);
+  $displayUserDiv.append($displayEmail);
+  $displayUserDiv.append($displayGame);
+  for (var i = 0; i < data.games.length; i++) {
+    var $gameList = $('<p id='+data.games[i].id+'>'+data.games[i].title+'</p>')
+    $gameList.click(function() {
+      console.log(this.getAttribute('id'));
+      getSingleGame(this.getAttribute('id'));
+    });
+    $displayGame.append($gameList);
+    $container.append($displayUserDiv);
+  }
+};
+
+var getSingleGame = function(id) {
+  $.ajax({
+    url: '/games/'+id,
+    method: 'GET'
+  }).done(function(data) {
+    console.log(data);
+    displayGame(data);
+  });
+};
+
+var displayGame = function(data) {
+  var $container = $('#container');
+  var $loginForm = $("#login-form");
+  var $signupForm = $("#signup-form");
+  $container.empty();
+  $loginForm.hide();
+  $signupForm.hide();
+  var $displayGameDiv = $('<div id='+data.id+'></div>');
+  var $displayGameTitle = $('<p>'+'Title: '+data.title+'</p>');
+  // var $displayGameImage = $('<img src='+data.image+'>');
+  var $displayGameDeck = $('<p>'+data.deck+'</p>');
+  var $displayGameDescription = $('<p>'+'Description: '+'</p>');
+  $displayGameDescription.html(data.description);
+  var $displayGamePlatforms = $('<p>'+'Platforms: '+'</p>');
+  var $displayGameRatings = $('<p>'+'Ratings: '+'</p>');
+  $displayGameDiv.append($displayGameTitle);
+  // $displayGameDiv.append($displayGameImage);
+  $displayGameDiv.append($displayGameDeck);
+  $displayGameDiv.append($displayGameDescription);
+  $displayGameDiv.append($displayGamePlatforms);
+  $displayGameDiv.append($displayGameRatings);
+  $container.append($displayGameDiv);
+};
+
+var searchGames = function(query) {
+  $.ajax({
+    url: '/games/search/'+query,
+    method: 'GET'
+  }).done(function(data) {
+    displaySearchResults(data);
+  });
+};
+
+var displaySearchResults = function(data) {
+  console.log(data);
+  var $container = $('#container');
+  var $loginForm = $("#login-form");
+  var $signupForm = $("#signup-form");
+  $container.empty();
+  $loginForm.hide();
+  $signupForm.hide();
+  for (var i = 0; i < data.length; i++) {
+    var $gameResults = $('<div id='+i+'></div>');
+    var $gameTitle = $('<p>'+'Title: '+data[i].name+'</p>');
+    var $gameImage = $('<img src='+data[i].image['small_url']+'>');
+    var $gameDeck = $('<p>'+data[i].deck+'</p>');
+    var $gameDescription = $('<p></p>');
+    $gameDescription.html('Description: '+data[i].description);
+    var $gamePlatforms = $('<ul>Platforms:</ul>');
+    for (var j = 0; j < data[i].platforms.length; j++) {
+      console.log(data[i].platforms[j]);
+      var $platformList = $('<li>'+data[i].platforms[j].name+'</li>');
+      $gamePlatforms.append($platformList);
+    }
+    $gameResults.append($gameTitle);
+    $gameResults.append($gameImage);
+    $gameResults.append($gameDeck);
+    $gameResults.append($gameDescription);
+    $gameResults.append($gamePlatforms);
+    $gameResults.append('<hr>');
+    $container.append($gameResults);
+  }
+};

@@ -55,17 +55,25 @@ router.get('/seed', function(req, res) {
   User.create({username: 'test3', email: 'test3', password: 'test3'});
 });
 
-// USER SHOW - user profile
+// USER SHOW
 router.get("/:id", function(req, res) {
+  var response_data = {user: '', games: ''};
   User.findById(req.params.id).then(function(user, err) {
     if (err) {
       console.log(err);
     } else {
+      response_data.user = user;
+      Game.findAll({where: {userId: req.params.id}}).then(function(games) {
+        response_data.games = games;
+        res.json(response_data);
+      })
       // console.log(user.games);
-      res.json(user);
     }
   });
 });
+
+// GAME SHOW
+router.get('/:id/')
 
 //UPDATE USER
 router.put("/:id", function(req, res) {

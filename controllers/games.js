@@ -27,7 +27,7 @@ router.get('/search/:query', function(req, res) {
       console.log('API Data below');
       // console.log(typeof body); Data from giant bomb is a string. Need to parse.
       // console.log(body);
-      res.json(JSON.parse(body));
+      res.json(JSON.parse(body).results);
     }
   });
 });
@@ -41,11 +41,11 @@ router.get('/seed', function(req, res) {
 // -----------------------------------------------
 // ROUTES THAT REQUIRE AUTHENTICATION w/ JWT BELOW
 // -----------------------------------------------
-router.use(passport.authenticate('jwt', { session: false }));
 
 //SHOW
 router.get('/:id', function(req, res) {
   Game.findById(req.params.id).then(function(game, err) {
+    console.log('testing game show');
     if (err) {
       console.log(err);
     } else {
@@ -64,7 +64,7 @@ router.put('/:id', function(req, res) {
     if (err) {
       console.log(err);
     } else {
-        game.create({
+        game.update({
           title: req.body.title,
           image: req.body.image,
           deck: req.body.deck,
