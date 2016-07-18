@@ -1,6 +1,6 @@
 var express = require('express');
 var Sequelize = require("sequelize");
-var db = process.env.DATABASE_URI || "postgres://localhost/game_logger";
+var db = process.env.DATABASE_URL || "postgres://localhost/game_logger";
 var connection = new Sequelize(db);
 var bcrypt = require('bcryptjs');
 var crypto = require('crypto');
