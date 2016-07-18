@@ -7,7 +7,7 @@ var connection = new Sequelize(db);
 var User = require('../models/users.js').user;
 var Game = require('../models/users.js').game;
 var passport = require('../config/passport.js');
-
+var request = require('request');
 //INDEX
 router.get('/', function(req, res) {
   console.log('testing game controller');
@@ -15,8 +15,19 @@ router.get('/', function(req, res) {
     if (err) {
       console.log(err);
     } else {
-      console.log(games[0].user);
+      // console.log(games[0].user);
       res.json(games);
+    }
+  });
+});
+router.get('/search/:query', function(req, res) {
+  console.log('making API call')
+  request('http://www.giantbomb.com/api/search/?api_key='+process.env.GIANT_BOMB_API+'&format=json&limit=10&query='+req.params.query+'&resources=game', function(error, response, body) {
+    if (!error) {
+      console.log('API Data below');
+      // console.log(typeof body); Data from giant bomb is a string. Need to parse.
+      // console.log(body);
+      res.json(JSON.parse(body));
     }
   });
 });
