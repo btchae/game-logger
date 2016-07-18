@@ -4,7 +4,9 @@ $(document).ready(function() {
   var $navbar = $('#navbar');
   var $home = $('<li>Home</li>');
   $home.click(function() {
-    $container.hide();
+    $container.empty();
+    $loginForm.hide();
+    $signupForm.hide();
     $container.append('<h1>Welcome to Game Logger!</h1>');
   });
   var $profile = $('<li>Profile</li>');
@@ -12,10 +14,21 @@ $(document).ready(function() {
   var $searchGames = $('<li>Search Games</li>');
   var $login = $('<li>Login</li>');
   $login.click(function() {
+    $container.empty();
+    $signupForm.hide();
     $loginForm.show();
   });
   var $signup = $('<li>Sign Up</li>');
+  $signup.click(function() {
+    $container.empty();
+    $loginForm.hide();
+    $signupForm.show();
+  })
   var $logout = $('<li>Logout</li>');
+  $logout.click(function(e){
+    Cookies.remove("jwt_token");
+    location.reload();
+  });
 
   // Auth related jQuery objects
   var $loginForm = $("#login-form");
