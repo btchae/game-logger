@@ -5,7 +5,7 @@ var JwtStrategy = require('passport-jwt').Strategy;
 var ExtractJwt = require('passport-jwt').ExtractJwt;
 var JwtOpts = {};
 // var pg = require('pg');
-var db = process.env.DATABASE_URI || "postgres://localhost/game_logger";
+var db = process.env.DATABASE_URL || "postgres://localhost/game_logger";
 // var client = new pg.Client(db);
 // client.connect();
 // var bcrypt = require('bcryptjs');
