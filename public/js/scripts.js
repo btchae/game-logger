@@ -312,6 +312,11 @@ var displaySearchResults = function(data) {
     var $gameDeck = $('<p>'+data[i].deck+'</p>');
     var $gameDescription = $('<p></p>');
     $gameDescription.html('Description: '+data[i].description);
+    var $addGameButton = $('<button id='+i+'>Add Game</button>');
+    $addGameButton.click(function(){
+      console.log(data[this.getAttribute('id')]);
+      saveGame(data[this.getAttribute('id')].name,data[this.getAttribute('id')].image['small_url'],data[this.getAttribute('id')].deck,data[this.getAttribute('id')].description);
+    });
     var $gamePlatforms = $('<ul>Platforms:</ul>');
     for (var j = 0; j < data[i].platforms.length; j++) {
       console.log(data[i].platforms[j]);
@@ -323,11 +328,25 @@ var displaySearchResults = function(data) {
     $gameResults.append($gameDeck);
     $gameResults.append($gameDescription);
     $gameResults.append($gamePlatforms);
+    $gameResults.append($addGameButton);
     $gameResults.append('<hr>');
     $container.append($gameResults);
   }
 };
-
+var saveGame = function(title, image, deck, description) {
+  console.log('testing save game');
+  $.ajax({
+    url: '/users/'+Cookies("id")+'/add-game',
+    method: 'POST',
+    data: {
+      title: title,
+      image: image,
+      deck: deck,
+      description: description,
+      userId: Cookies("id")
+    }
+  })
+}
 var getUserEdit = function(id) {
   $.ajax({
     url: '/users/'+id,

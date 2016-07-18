@@ -126,7 +126,6 @@ router.post('/:id/add-game', function(req, res) {
     deck: req.body.deck,
     description: req.body.description,
     platforms: req.body.platforms,
-    ratings: req.body.ratings,
     userId: req.params.id
   });
 });
