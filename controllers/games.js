@@ -2,7 +2,7 @@
 var express = require('express');
 var router = express.Router();
 var Sequelize = require("sequelize");
-var db = process.env.DATABASE_URL || "postgres://localhost/social_app_dev";
+var db = process.env.DATABASE_URL || "postgres://localhost/game_logger";
 var connection = new Sequelize(db);
 var User = require('../models/users.js').user;
 var Game = require('../models/users.js').game;
