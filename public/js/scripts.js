@@ -362,7 +362,14 @@ var displayUserEdit = function(data) {
   $userEditForm.append($passwordInput);
   $userEditForm.append($emailInput);
   $userEditForm.append($editButton);
+  $deleteButton = $('<button>Delete</button>');
+  $deleteButton.click(function() {
+    deleteUser(Cookies("id"));
+    Cookies.remove("jwt_token");
+    location.reload();
+  });
   $container.append($userEditForm);
+  $container.append($deleteButton);
 }
 
 var updateUser = function(username, email, password) {
@@ -380,6 +387,14 @@ var updateUser = function(username, email, password) {
   });
 };
 
+var deleteUser = function(id) {
+  $.ajax({
+    url: '/users/'+Cookies("id"),
+    method: 'DELETE'
+  }).done(function() {
+    getUsers();
+  });
+}
   //   var $form = $('<form></form>');
   //   $form.attr('method','get');
   //   $form.submit(function(e){
