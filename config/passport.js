@@ -1,4 +1,4 @@
-var User = require('../models/users.js');
+var User = require('../models/users.js').user;
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var JwtStrategy = require('passport-jwt').Strategy;

@@ -1,16 +1,42 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Game Logger</title>
-  <link rel="stylesheet" type="text/css" href="../css/styles.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.1/react.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.1/react-dom.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.16/browser.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
-  <script type="text/babel" src="./js/scripts.js"></script>
-</head>
-<body>
-  <div id="container">
-  </div>
-</body>
+  <head>
+    <meta charset="utf-8">
+    <title>Game Logger</title>
+    <link rel="stylesheet" type="text/css" href="../css/styles.css">
+
+    <!-- jQuery lib -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.1/jquery.min.js" charset="utf-8"></script>
+    <!-- Cookies lib -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.1/js.cookie.min.js" charset="utf-8"></script>
+    <script src="js/scripts.js" charset="utf-8"></script>
+  </head>
+  <body>
+  <ul id="navbar"></ul>
+    <div id="container">
+    </div>
+      <a id="signup-link" href="/signup">Sign Up</a>
+      <a id="logout-link" style="display: none" href="#">Log Out</a>
+
+      <form action="#" id="login-form">
+        <h5>Priss login</h5>
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password">
+        <input type="submit" value="LOG IN">
+      </form>
+
+      <form action="/users" id="signup-form">
+        <h5>Priss signup</h5>
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username">
+        <label for="email">Email</label>
+        <input type="text" id="email" name="email">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password">
+        <input type="Submit" value="SIGN UP">
+      </form>
+      </br>
+  </body>
 </html>

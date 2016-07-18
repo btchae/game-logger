@@ -55,4 +55,40 @@ router.get('/:id', function(req, res) {
   });
 });
 
+//Create game is not here because I need the user ID to associate it with a user.
+
+//UPDATE GAME
+router.put('/:id', function(req, res) {
+  console.log('testing update game');
+  Game.findById(req.params.id).then(function(game, err) {
+    if (err) {
+      console.log(err);
+    } else {
+        game.create({
+          title: req.body.title,
+          image: req.body.image,
+          deck: req.body.deck,
+          description: req.body.description,
+          platforms: req.body.platforms,
+          ratings: req.body.ratings
+      });
+    }
+  });
+});
+//DELETE GAME
+router.delete('/:id', function(req, res) {
+  console.log('testing delete game route');
+  Game.findById(req.params.id).then(function(game, err){
+    if (err) {
+      console.log(err);
+    } else if (req.params.id == game.id) {
+      console.log('game should be deleting');
+      game.destroy
+      res.send(true);
+    } else {
+      console.log('Your princess is in another castle');
+    }
+  });
+});
+
 module.exports = router;
