@@ -19,6 +19,7 @@ JwtOpts.jwtFromRequest = function(req) {
   return token;
 };
 
+
 JwtOpts.secretOrKey = process.env.JWT_SECRET;
 
 passport.use(new JwtStrategy(JwtOpts, function(jwt_payload, done) {
