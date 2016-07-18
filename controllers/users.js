@@ -38,7 +38,7 @@ router.post('/', function(req, res) {
 //   });
 // });
 // INDEX
-router.get('/', function(req, res, next) {
+router.get('/', function(req, res) {
   User.findAll({include: [Game]}).then(function(users, err) {
     if (err) {
       console.log(err);

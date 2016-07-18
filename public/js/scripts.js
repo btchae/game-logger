@@ -11,6 +11,9 @@ $(document).ready(function() {
   });
   var $profile = $('<li>Profile</li>');
   var $users = $('<li>Users</li>');
+  $users.click(function() {
+    getUsers();
+  });
   var $searchGames = $('<li>Search Games</li>');
   var $login = $('<li>Login</li>');
   $login.click(function() {
@@ -144,3 +147,42 @@ var testAuth = function() {
     console.log(data);
   }); 
 };
+
+//Getting all users
+var getUsers = function() {
+  $.ajax({
+    url: '/users',
+    method: 'GET'
+  }).done(function(data) {
+    console.log(data);
+    displayUsers(data);
+  });
+};
+
+var displayUsers = function(data) {
+  var $container = $('#container');
+  var $loginForm = $("#login-form");
+  var $signupForm = $("#signup-form");
+  $container.empty();
+  $loginForm.hide();
+  $signupForm.hide();
+  for (var i = 0; i < data.length; i++) {
+    console.log(data[i].id);
+    console.log(data[i].username);
+    var userList = $('<p id='+data[i].id+'>'+data[i].username+'</p>')
+    userList.click(function() {
+      console.log(this.getAttribute('id'));
+      getSingleUser(this.getAttribute('id'));
+    });
+    $container.append(userList);
+  }
+};
+
+var getSingleUser = function(id) {
+  $.ajax({
+    url: '/users/'+id,
+    method: 'GET'
+  }).done(function(data) {
+    console.log(data);
+  });
+}
