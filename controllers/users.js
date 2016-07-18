@@ -7,7 +7,8 @@ var connection = new Sequelize(db);
 var User = require('../models/users.js').user;
 var Game = require('../models/users.js').game;
 var passport = require('../config/passport.js');
-
+User.sync();
+Game.sync();
 // ------------------------------
 // ROUTES THAT DON'T REQUIRE AUTH
 // ------------------------------
