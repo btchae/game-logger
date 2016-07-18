@@ -4,7 +4,8 @@ var router = express.Router();
 var Sequelize = require("sequelize");
 var db = process.env.DATABASE_URI || "postgres://localhost/game_logger";
 var connection = new Sequelize(db);
-var User = require('../models/users.js');
+var User = require('../models/users.js').user;
+var Game = require('../models/users.js').game;
 var passport = require('../config/passport.js');
 
 // ------------------------------
@@ -26,13 +27,32 @@ router.post('/', function(req, res) {
   res.send(true);
 });
 
-router.get('/', function(req, res) {
-  console.log('testing index');
+// router.get('/', function(req, res) {
+//   console.log('testing index');
+//   User.findAll({include: [Game]}.then(function(users,err) {
+//     if (err) {
+//       console.log(err);
+//     } else {
+//       res.send(users);
+//     }
+//   });
+// });
+// INDEX
+router.get('/', function(req, res, next) {
+  User.findAll({include: [Game]}).then(function(users, err) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(users[0].games);
+      // console.log(users);
+      res.send(users);
+    }
+  });
 });
 
 router.get('/seed', function(req, res) {
   console.log('testing seed');
-  User.create({username: 'test1', email: 'test1', password: 'test1'});
+  User.create({username: 'test3', email: 'test3', password: 'test3'});
 });
 
 // USER SHOW - user profile
@@ -41,6 +61,7 @@ router.get("/:id", function(req, res) {
     if (err) {
       console.log(err);
     } else {
+      // console.log(user.games);
       res.json(user);
     }
   });

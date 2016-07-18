@@ -54,7 +54,8 @@ sequelize.authenticate().then(function(err) {
 //=========================
 var usersController = require('./controllers/users.js');
 app.use('/users', usersController);
-
+var gamesController = require('./controllers/games.js');
+app.use('/games', gamesController);
 var authController = require('./controllers/auth.js')
 app.use('/auth', authController);
 

@@ -23,21 +23,22 @@ var Game = connection.define('games', {
     allowNull: true
   },
   platforms: {
-    type: Sequelize.ARRAY,
+    type: Sequelize.ARRAY(Sequelize.STRING),
     allowNull: true
   },
   ratings: {
-    type: Sequelize.ARRAY,
+    type: Sequelize.ARRAY(Sequelize.STRING),
     allowNull: true
   }
 });
 
 var table = function() {
+  console.log('testing table');
     Game.sync().then(function() {
     //Table created
     console.log("Game Table Created");
-  })
-}
+  });
+};
 
 module.exports = {
   model: Game,

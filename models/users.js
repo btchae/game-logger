@@ -34,6 +34,40 @@ var User = connection.define('users', {
   }
 });
 
-User.sync();
+var Game = connection.define('games', {
+  title: {
+    type: Sequelize.STRING,
+    allowNull: false 
+  },
+  image: {
+    type: Sequelize.TEXT, 
+    allowNull: true
+  },
+  deck: {
+    type: Sequelize.TEXT,
+    allowNull: true
+  }, 
+  description: {
+    type: Sequelize.TEXT,
+    allowNull: true
+  },
+  platforms: {
+    type: Sequelize.ARRAY(Sequelize.STRING),
+    allowNull: true
+  },
+  ratings: {
+    type: Sequelize.ARRAY(Sequelize.STRING),
+    allowNull: true
+  }
+});
 
-module.exports = User;
+User.hasMany(Game);
+Game.belongsTo(User);
+
+User.sync();
+Game.sync();
+
+module.exports ={
+user: User,
+game: Game
+}
