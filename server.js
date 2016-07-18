@@ -66,4 +66,3 @@ app.listen(port);
 console.log('=============================');
 console.log('Our band is called PORT: ' + port);
 console.log('=============================');
-console.log(process.env.GIANT_BOMB_API);
